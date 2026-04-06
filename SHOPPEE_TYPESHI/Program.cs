@@ -3,10 +3,11 @@ using System.ComponentModel;
 
 namespace Shopping
 {
-    class Program
+    public class Program
     {
         static void Main()
         {
+            Shop shop = new Shop();
             while (true)
             {
                 int num = 1;
@@ -23,6 +24,7 @@ namespace Shopping
                     case "1":
                         break;
                     case "2":
+                        shop.ViewProducts();
                         break;
                     case "3":
                         break;
@@ -61,6 +63,16 @@ namespace Shopping
             new Product("27-inch Monitor", 8999.00, 15),
             new Product("USB-C Hub", 799.75, 30)
         };
+
+        public void ViewProducts()
+        {
+            Console.WriteLine("");
+            foreach (var product in products)
+            {
+                Console.WriteLine($"Name: {product.Name}, Price: {product.Price}, Stock: {product.Stock}");
+            }
+            Console.WriteLine("");
+        }
 
     }
 }
