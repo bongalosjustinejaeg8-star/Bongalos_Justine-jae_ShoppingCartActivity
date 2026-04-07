@@ -1,17 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Shopping
 {
     public class Program
     {
-        static void Main()
+        public static void Main()
         {
             Shop shop = new Shop();
-            while (true)
-            {
+            
                 int num = 1;
-                List<string> options = ["START SHOPPING", "VIEW PRODUCTS", "SEARCH PRODUCTS","ADD PRODUCT", "EXIT"];
+                List<string> options = ["START SHOPPING", "VIEW PRODUCTS", "ADD PRODUCT", "EXIT"];
                 Console.WriteLine("WELCOME to SHOPPEE TYPESHI");
                 foreach (var words in options)
                 {
@@ -19,22 +19,23 @@ namespace Shopping
                     num++;
                 }
                 string customer_descision = Console.ReadLine();
-                switch (customer_descision)
-                {
-                    case "1":
-                        break;
-                    case "2":
-                        shop.ViewProducts();
-                        break;
-                    case "3":
-                        break;
-                    case "4":
-                        return;
-                    default:
-                        Console.WriteLine("Invalid Choice");
-                        break;
-                }
-
+            switch (customer_descision)
+            {
+                case "1":
+                    shop.ViewProducts();
+                    shop.Cart();
+                    break;
+                case "2":
+                    shop.ViewProducts();
+                    break;
+                case "3":
+                    break;
+                case "4":
+                    return;
+                default:
+                    Console.WriteLine("Invalid Choice");
+                    Main();
+                    break;
             }
 
         }
@@ -57,21 +58,145 @@ namespace Shopping
     {
         public List<Product> products = new List<Product>
         {
-            new Product("Laptop", 45999.99, 10),
-            new Product("Mechanical Keyboard", 3499.50, 25),
-            new Product("Wireless Mouse", 1299.99, 40),
-            new Product("27-inch Monitor", 8999.00, 15),
-            new Product("USB-C Hub", 799.75, 30)
+            new Product("Laptop", 450, 10),
+            new Product("Mechanical Keyboard", 349, 25),
+            new Product("Wireless Mouse", 12.99, 40),
+            new Product("27-inch Monitor", 89.00, 15),
+            new Product("USB-C Hub", 79.75, 30)
         };
+        public List<Product> CartContent = new List<Product>();
 
         public void ViewProducts()
         {
+            int TempNum = 1;
             Console.WriteLine("");
             foreach (var product in products)
             {
-                Console.WriteLine($"Name: {product.Name}, Price: {product.Price}, Stock: {product.Stock}");
+                Console.WriteLine($"{TempNum}. Name: {product.Name}, Price: {product.Price}, Stock: {product.Stock}");
+                TempNum++;
             }
             Console.WriteLine("");
+        }
+
+        private void StockChange()
+        {
+
+        }
+
+        public void Cart()
+        {
+                Console.WriteLine("Please Enter the Number of the Product you wanna buy, 'X' to exit & C for checkout: ");
+                string Adding = Console.ReadLine();
+                switch (Adding.ToUpper())
+                {
+                case "1":
+                    Confirmation(int.Parse(Adding)-1);
+                    break;
+                case "2":
+                    Confirmation(int.Parse(Adding) - 1);
+                    break;
+                case "3":
+                    Confirmation(int.Parse(Adding) - 1);
+                    break;
+                case "4":
+                    Confirmation(int.Parse(Adding) - 1);
+                    break;
+                case "5":
+                    Confirmation(int.Parse(Adding) - 1);
+                    break;
+                case "X":
+                    Shopping.Program.Main();
+                    return;
+                default:
+                    Console.WriteLine("Non Existing Product");
+                    Cart();
+                    break;
+
+                }
+            
+
+
+        }
+        private void AddToCart(string name, int qty)
+        {
+            foreach (var items in products)
+            {
+                if (items.Name == name)
+                {
+                    if ((items.Stock - qty) >= 0)
+                    {
+                        if (CartContent == null)
+                        {
+                            CartContent.Add(new Product(name, (items.Price) * qty, qty));
+                            ShowCart(qty);
+                        }
+                        else
+                        {
+                            foreach (var content in CartContent)
+                            {
+                                if (content.Name == name)
+                                {
+                                    content.Price += (items.Price) * qty;
+                                    content.Stock += qty;
+                                    ShowCart(content.Stock);
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        private void Confirmation(int number)
+        {
+            Console.WriteLine($"are you sure you wanna add {products[number].Name} to Cart? Y/N ");
+            string TempDescision = Console.ReadLine();
+            if (TempDescision.ToUpper() == "Y")
+            {
+                Confirmation2(products[number].Name);
+            }
+            else
+            {
+                Console.WriteLine("Cancelled!");
+                Cart();
+            }
+
+        }
+        private void Confirmation2(string name)
+        {
+            Console.WriteLine($"How Many {name} would you buy?: ");
+            int amount = int.Parse(Console.ReadLine());
+            foreach (var items in products)
+            {
+                if (items.Name == name)
+                {
+                    if ((items.Stock - amount) >= 0)
+                    {
+                        AddToCart(name, amount);
+
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Stocks for {name} is not enough");
+                        Confirmation2(name);
+                    }
+                }
+            }
+        }
+        private void ShowCart(int qty)
+        {
+            double Overall = 0;
+            Console.WriteLine("Your Cart: ");
+            foreach (var item in CartContent)
+            {
+                Console.WriteLine($"Name: {item.Name} qty: {qty} Price: {item.Price} SubTotal: {(item.Price * qty)}");
+                Overall += (item.Price * qty);
+            }
+            Console.WriteLine("OVERALL TOTAL: " + Overall);
+            Console.WriteLine("");
+            Console.WriteLine("------------------------------------------------------------------------------");
+            Console.WriteLine("");
+            Cart();
         }
 
     }
