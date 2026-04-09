@@ -9,7 +9,8 @@ namespace Shopping
         public static void Main()
         {
             Shop shop = new Shop();
-            
+            while (true)
+            {
                 int num = 1;
                 List<string> options = ["START SHOPPING", "VIEW PRODUCTS", "ADD PRODUCT", "EXIT"];
                 Console.WriteLine("WELCOME to SHOPPEE TYPESHI");
@@ -19,35 +20,35 @@ namespace Shopping
                     num++;
                 }
                 string customer_descision = Console.ReadLine();
-            switch (customer_descision)
-            {
-                case "1":
-                    shop.ViewProducts();
-                    shop.Cart();
-                    break;
-                case "2":
-                    shop.ViewProducts();
-                    break;
-                case "3":
-                    break;
-                case "4":
-                    return;
-                default:
-                    Console.WriteLine("Invalid Choice");
-                    Main();
-                    break;
+                switch (customer_descision)
+                {
+                    case "1":
+                        Console.Clear();
+                        shop.Cart();
+                        break;
+                    case "2":
+                        shop.DisplayProducts();
+                        break;
+                    case "3":
+                        break;
+                    case "4":
+                        return;
+                    default:
+                        Console.WriteLine("Invalid Choice");
+                        break;
+                }
             }
-
         }
 
     }
     public class Product
     {
+        public int ID { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
         public int Stock { get; set; }
 
-        public Product(string name, double price, int stock)
+        public Product(int ID, string name, double price, int stock)
         {
             Name = name;
             Price = price;
@@ -58,15 +59,15 @@ namespace Shopping
     {
         public List<Product> products = new List<Product>
         {
-            new Product("Laptop", 450, 10),
-            new Product("Mechanical Keyboard", 349, 25),
-            new Product("Wireless Mouse", 12.99, 40),
-            new Product("27-inch Monitor", 89.00, 15),
-            new Product("USB-C Hub", 79.75, 30)
+            new Product(001,"Laptop", 450, 10),
+            new Product(002,"Mechanical Keyboard", 349, 25),
+            new Product(003,"Wireless Mouse", 12.99, 40),
+            new Product(004,"27-inch Monitor", 89.00, 15),
+            new Product(005,"USB-C Hub", 79.75, 30)
         };
         public List<Product> CartContent = new List<Product>();
 
-        public void ViewProducts()
+        public void DisplayProducts()
         {
             int TempNum = 1;
             Console.WriteLine("");
@@ -77,15 +78,10 @@ namespace Shopping
             }
             Console.WriteLine("");
         }
-
-        private void StockChange()
-        {
-
-        }
-
         public void Cart()
         {
-                Console.WriteLine("Please Enter the Number of the Product you wanna buy, 'X' to exit & C for checkout: ");
+            DisplayProducts();
+            Console.WriteLine("Please Enter the Number of the Product you wanna buy, 'X' to exit & C for checkout: ");
                 string Adding = Console.ReadLine();
                 switch (Adding.ToUpper())
                 {
@@ -125,9 +121,16 @@ namespace Shopping
                 {
                     if ((items.Stock - qty) >= 0)
                     {
-                        if (CartContent == null)
+                        if (CartContent.Count == 0)
                         {
-                            CartContent.Add(new Product(name, (items.Price) * qty, qty));
+                            CartContent.Add(new Product(items.ID, name, (items.Price) * qty, qty));
+                            items.Stock -= qty;
+                            ShowCart(qty);
+                        }
+                        else if (CartContent.Count<=5)
+                        {
+                            CartContent.Add(new Product(items.ID, name, (items.Price) * qty, qty));
+                            items.Stock -= qty;
                             ShowCart(qty);
                         }
                         else
@@ -138,7 +141,14 @@ namespace Shopping
                                 {
                                     content.Price += (items.Price) * qty;
                                     content.Stock += qty;
+                                    items.Stock -= qty;
                                     ShowCart(content.Stock);
+                                }
+                                else
+                                {
+                                    CartContent.Add(new Product(items.ID, name, (items.Price) * qty, qty));
+                                    items.Stock -= qty;
+                                    ShowCart(qty);
                                 }
                             }
                         }
@@ -165,20 +175,43 @@ namespace Shopping
         private void Confirmation2(string name)
         {
             Console.WriteLine($"How Many {name} would you buy?: ");
-            int amount = int.Parse(Console.ReadLine());
-            foreach (var items in products)
+            string amount = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(amount) == false)
             {
-                if (items.Name == name)
+                int qty = int.Parse(amount);
+                foreach (var items in products)
                 {
-                    if ((items.Stock - amount) >= 0)
+                    if (items.Name == name)
                     {
-                        AddToCart(name, amount);
+                        if ((items.Stock - qty) >= 0)
+                        {
+                            AddToCart(name, qty);
 
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Stocks for {name} is not enough");
+                            Confirmation2(name);
+                        }
                     }
-                    else
+                }
+            }
+            else
+            {
+                foreach (var items in products)
+                {
+                    if (items.Name == name)
                     {
-                        Console.WriteLine($"Stocks for {name} is not enough");
-                        Confirmation2(name);
+                        if ((items.Stock - 1) >= 0)
+                        {
+                            AddToCart(name, 1);
+
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Stocks for {name} is not enough");
+                            Confirmation2(name);
+                        }
                     }
                 }
             }
@@ -186,11 +219,14 @@ namespace Shopping
         private void ShowCart(int qty)
         {
             double Overall = 0;
+            Console.Clear();
+            Console.WriteLine("------------------------------------------------------------------------------");
             Console.WriteLine("Your Cart: ");
             foreach (var item in CartContent)
             {
                 Console.WriteLine($"Name: {item.Name} qty: {qty} Price: {item.Price} SubTotal: {(item.Price * qty)}");
                 Overall += (item.Price * qty);
+                
             }
             Console.WriteLine("OVERALL TOTAL: " + Overall);
             Console.WriteLine("");
