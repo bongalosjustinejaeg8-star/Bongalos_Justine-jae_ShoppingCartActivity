@@ -69,6 +69,8 @@ namespace Shopping
         };
         public List<Product> CartContent = new List<Product>();
         double Overall = 0;
+        double Discount = 0;
+
 
         public void DisplayProducts()
         {
@@ -109,6 +111,10 @@ namespace Shopping
                         case "X":
                             return;
                         case "C":
+                            if (Overall >= 5000)
+                            {
+                                Discount = Overall - (Overall * 0.10);
+                            }
                             Checkout();
                             break;
                         default:
@@ -134,6 +140,7 @@ namespace Shopping
                         {
                             CartContent.Add(new Product(items.ID, name, (items.Price) * qty, qty));
                             items.Stock -= qty;
+                            Overall += (items.Price) * qty;
                             ShowCart();
                         }
 
@@ -146,12 +153,14 @@ namespace Shopping
                                     content.Price += (items.Price) * qty;
                                     content.Stock += qty;
                                     items.Stock -= qty;
+                                    Overall += (items.Price) * qty;
                                     ShowCart();
                                 }
                                 else
                                 {
                                     CartContent.Add(new Product(items.ID, name, (items.Price) * qty, qty));
                                     items.Stock -= qty;
+                                    Overall += (items.Price) * qty;
                                     ShowCart();
                                 }
                             }
@@ -230,7 +239,6 @@ namespace Shopping
             foreach (var item in CartContent)
             {
                 Console.WriteLine($"Name: {item.Name} qty: {item.Stock} SubTotal:{item.Price}");
-                Overall += (item.Price * item.Stock);
 
             }
             Console.WriteLine("OVERALL TOTAL: " + Overall);
@@ -243,6 +251,60 @@ namespace Shopping
         private void Checkout()
         {
             Console.Clear();
+            if (Overall >= 5000)
+            {
+                Discounted();
+            }
+            else
+            {
+                NormalCheckout();
+            }
+            
+
+
+        }
+        private void Discounted()
+        {
+            Console.WriteLine($"Overall total: {Discount}, Enter Your Payment");
+            string Payment = Console.ReadLine();
+            try
+            {
+                if (int.Parse(Payment) >= Discount)
+                {
+                    int qty = 0;
+                    Console.WriteLine("");
+                    Console.WriteLine("------------------------------------------------------------------------------");
+                    Console.WriteLine("Your Reciept");
+                    foreach (var item in CartContent)
+                    {
+                        qty += item.Stock;
+                        Console.WriteLine($"Name: {item.Name} qty:{item.Stock} Price: {item.Price} SubTotal: {(item.Price * item.Stock)}");
+
+
+                    }
+                    Console.WriteLine($"Total: {Overall}");
+                    Console.WriteLine($"Discounted(10%): {Discounted}");
+                    Console.WriteLine($"Change: {int.Parse(Payment) - Discount}");
+
+
+
+                }
+                else
+                {
+                    Console.WriteLine("please enter a valid Amount");
+                    Console.ReadLine();
+                    Checkout();
+                }
+            }
+            catch
+            {
+                Console.WriteLine("please enter a valid Amount");
+                Console.ReadLine();
+                Checkout();
+            }
+        }
+        private void NormalCheckout()
+        {
             Console.WriteLine($"Overall total: {Overall}, Enter Your Payment");
             string Payment = Console.ReadLine();
             try
@@ -262,11 +324,13 @@ namespace Shopping
                     }
                     Console.WriteLine($"Total: {Overall}");
                     Console.WriteLine($"Change: {int.Parse(Payment) - Overall}");
+                    Console.WriteLine($"Change: {int.Parse(Payment) - Overall}");
                     Console.WriteLine("------------------------------------------------------------------------------");
                     Console.WriteLine("");
                     Console.WriteLine("Press Enter to Continue");
                     Console.ReadLine();
                     Overall = 0;
+                    Discount = 0;
                     CartContent = new List<Product>();
 
                 }
@@ -283,8 +347,6 @@ namespace Shopping
                 Console.WriteLine("please enter a valid Amount");
                 Checkout();
             }
-
-
         }
     }
 }
