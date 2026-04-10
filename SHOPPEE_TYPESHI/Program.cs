@@ -259,13 +259,14 @@ namespace Shopping
             {
                 NormalCheckout();
             }
-            
+
 
 
         }
         private void Discounted()
         {
-            Console.WriteLine($"Overall total: {Discount}, Enter Your Payment");
+            Console.WriteLine($"Overall total: {Overall}");
+            Console.WriteLine($"Discounted total: {Discount}, Enter Your Payment");
             string Payment = Console.ReadLine();
             try
             {
@@ -278,13 +279,13 @@ namespace Shopping
                     foreach (var item in CartContent)
                     {
                         qty += item.Stock;
-                        Console.WriteLine($"Name: {item.Name} qty:{item.Stock} Price: {item.Price} SubTotal: {(item.Price * item.Stock)}");
+                        Console.WriteLine($"Name: {item.Name} qty:{item.Stock} Price: {item.Price}");
 
 
                     }
                     Console.WriteLine($"Total: {Overall}");
-                    Console.WriteLine($"Discounted(10%): {Discounted}");
-                    Console.WriteLine($"Change: {int.Parse(Payment) - Discount}");
+                    Console.WriteLine($"Discounted(10%): {Discount}");
+                    Console.WriteLine($"Change: {(int.Parse(Payment) - Discount):F2}");
 
 
 
@@ -318,13 +319,12 @@ namespace Shopping
                     foreach (var item in CartContent)
                     {
                         qty += item.Stock;
-                        Console.WriteLine($"Name: {item.Name} qty:{item.Stock} Price: {item.Price} SubTotal: {(item.Price * item.Stock)}");
+                        Console.WriteLine($"Name: {item.Name} qty:{item.Stock} Price: {item.Price}");
 
 
                     }
                     Console.WriteLine($"Total: {Overall}");
-                    Console.WriteLine($"Change: {int.Parse(Payment) - Overall}");
-                    Console.WriteLine($"Change: {int.Parse(Payment) - Overall}");
+                    Console.WriteLine($"Change: {(int.Parse(Payment) - Overall):F2}");
                     Console.WriteLine("------------------------------------------------------------------------------");
                     Console.WriteLine("");
                     Console.WriteLine("Press Enter to Continue");
