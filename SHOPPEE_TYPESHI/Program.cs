@@ -12,6 +12,7 @@ namespace Shopping
             while (true)
             {
                 int num = 1;
+                Console.Clear();
                 List<string> options = ["START SHOPPING", "VIEW PRODUCTS", "ADD PRODUCT", "EXIT"];
                 Console.WriteLine("WELCOME to SHOPPEE TYPESHI");
                 foreach (var words in options)
@@ -28,6 +29,7 @@ namespace Shopping
                         break;
                     case "2":
                         shop.DisplayProducts();
+                        Console.ReadLine();
                         break;
                     case "3":
                         break;
@@ -66,6 +68,7 @@ namespace Shopping
             new Product(005,"USB-C Hub", 79.75, 30)
         };
         public List<Product> CartContent = new List<Product>();
+        double Overall = 0;
 
         public void DisplayProducts()
         {
@@ -80,36 +83,42 @@ namespace Shopping
         }
         public void Cart()
         {
-            DisplayProducts();
-            Console.WriteLine("Please Enter the Number of the Product you wanna buy, 'X' to exit & C for checkout: ");
+            while (true)
+            {
+                DisplayProducts();
+                Console.WriteLine("Please Enter the Number of the Product you wanna buy, 'X' to exit & C for checkout: ");
                 string Adding = Console.ReadLine();
-                switch (Adding.ToUpper())
+                Adding.ToUpper();
+                try
                 {
-                case "1":
-                    Confirmation(int.Parse(Adding)-1);
-                    break;
-                case "2":
-                    Confirmation(int.Parse(Adding) - 1);
-                    break;
-                case "3":
-                    Confirmation(int.Parse(Adding) - 1);
-                    break;
-                case "4":
-                    Confirmation(int.Parse(Adding) - 1);
-                    break;
-                case "5":
-                    Confirmation(int.Parse(Adding) - 1);
-                    break;
-                case "X":
-                    Shopping.Program.Main();
-                    return;
-                default:
-                    Console.WriteLine("Non Existing Product");
-                    Cart();
-                    break;
-
+                    if (products.Count >= int.Parse(Adding) - 1)
+                    {
+                        Confirmation(int.Parse(Adding) - 1);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Choice");
+                        Console.ReadLine();
+                        Console.Clear();
+                    }
                 }
-            
+                catch
+                {
+                    switch (Adding.ToUpper())
+                    {
+                        case "X":
+                            return;
+                        case "C":
+                            Checkout();
+                            break;
+                        default:
+                            Console.WriteLine("Invalid Choice");
+                            break;
+                    }
+                }
+            }
+
+
 
 
         }
@@ -125,14 +134,9 @@ namespace Shopping
                         {
                             CartContent.Add(new Product(items.ID, name, (items.Price) * qty, qty));
                             items.Stock -= qty;
-                            ShowCart(qty);
+                            ShowCart();
                         }
-                        else if (CartContent.Count<=5)
-                        {
-                            CartContent.Add(new Product(items.ID, name, (items.Price) * qty, qty));
-                            items.Stock -= qty;
-                            ShowCart(qty);
-                        }
+
                         else
                         {
                             foreach (var content in CartContent)
@@ -142,13 +146,13 @@ namespace Shopping
                                     content.Price += (items.Price) * qty;
                                     content.Stock += qty;
                                     items.Stock -= qty;
-                                    ShowCart(content.Stock);
+                                    ShowCart();
                                 }
                                 else
                                 {
                                     CartContent.Add(new Product(items.ID, name, (items.Price) * qty, qty));
                                     items.Stock -= qty;
-                                    ShowCart(qty);
+                                    ShowCart();
                                 }
                             }
                         }
@@ -168,6 +172,7 @@ namespace Shopping
             else
             {
                 Console.WriteLine("Cancelled!");
+                Console.ReadLine();
                 Cart();
             }
 
@@ -216,17 +221,17 @@ namespace Shopping
                 }
             }
         }
-        private void ShowCart(int qty)
+        private void ShowCart()
         {
-            double Overall = 0;
+
             Console.Clear();
             Console.WriteLine("------------------------------------------------------------------------------");
             Console.WriteLine("Your Cart: ");
             foreach (var item in CartContent)
             {
-                Console.WriteLine($"Name: {item.Name} qty: {qty} Price: {item.Price} SubTotal: {(item.Price * qty)}");
-                Overall += (item.Price * qty);
-                
+                Console.WriteLine($"Name: {item.Name} qty: {item.Stock} SubTotal:{item.Price}");
+                Overall += (item.Price * item.Stock);
+
             }
             Console.WriteLine("OVERALL TOTAL: " + Overall);
             Console.WriteLine("");
@@ -235,5 +240,51 @@ namespace Shopping
             Cart();
         }
 
+        private void Checkout()
+        {
+            Console.Clear();
+            Console.WriteLine($"Overall total: {Overall}, Enter Your Payment");
+            string Payment = Console.ReadLine();
+            try
+            {
+                if (int.Parse(Payment) >= Overall)
+                {
+                    int qty = 0;
+                    Console.WriteLine("");
+                    Console.WriteLine("------------------------------------------------------------------------------");
+                    Console.WriteLine("Your Reciept");
+                    foreach (var item in CartContent)
+                    {
+                        qty += item.Stock;
+                        Console.WriteLine($"Name: {item.Name} qty:{item.Stock} Price: {item.Price} SubTotal: {(item.Price * item.Stock)}");
+
+
+                    }
+                    Console.WriteLine($"Total: {Overall}");
+                    Console.WriteLine($"Change: {int.Parse(Payment) - Overall}");
+                    Console.WriteLine("------------------------------------------------------------------------------");
+                    Console.WriteLine("");
+                    Console.WriteLine("Press Enter to Continue");
+                    Console.ReadLine();
+                    Overall = 0;
+                    CartContent = new List<Product>();
+
+                }
+                else
+                {
+                    Console.WriteLine("please enter a valid Amount");
+                    Console.ReadLine();
+                    Checkout();
+                }
+
+            }
+            catch
+            {
+                Console.WriteLine("please enter a valid Amount");
+                Checkout();
+            }
+
+
+        }
     }
 }
