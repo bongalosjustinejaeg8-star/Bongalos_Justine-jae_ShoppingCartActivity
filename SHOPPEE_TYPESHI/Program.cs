@@ -13,7 +13,7 @@ namespace Shopping
             {
                 int num = 1;
                 Console.Clear();
-                List<string> options = ["START SHOPPING", "VIEW PRODUCTS", "ADD PRODUCT", "EXIT"];
+                List<string> options = ["START SHOPPING", "VIEW PRODUCTS", "EXIT"];
                 Console.WriteLine("WELCOME to SHOPPEE TYPESHI");
                 foreach (var words in options)
                 {
@@ -29,6 +29,7 @@ namespace Shopping
                         break;
                     case "2":
                         shop.DisplayProducts();
+                        Console.WriteLine("Press Enter to Continue");
                         Console.ReadLine();
                         break;
                     case "3":
@@ -70,6 +71,9 @@ namespace Shopping
         public List<Product> CartContent = new List<Product>();
         double Overall = 0;
         double Discount = 0;
+        int CartLimit = 0;
+        int MaxCartLimit = 10;
+
 
 
         public void DisplayProducts()
@@ -90,7 +94,7 @@ namespace Shopping
                 DisplayProducts();
                 Console.WriteLine("Please Enter the Number of the Product you wanna buy, 'X' to exit & C for checkout: ");
                 string Adding = Console.ReadLine();
-                Adding.ToUpper();
+                Adding = Adding.ToUpper();
                 try
                 {
                     if (products.Count >= int.Parse(Adding) - 1)
@@ -106,7 +110,7 @@ namespace Shopping
                 }
                 catch
                 {
-                    switch (Adding.ToUpper())
+                    switch (Adding)
                     {
                         case "X":
                             return;
@@ -136,6 +140,12 @@ namespace Shopping
                 {
                     if ((items.Stock - qty) >= 0)
                     {
+                        if (CartLimit + qty > MaxCartLimit)
+                        {
+                            Console.WriteLine($"Cart limit reached! You can only add {MaxCartLimit - CartLimit} more item(s).");
+                            Console.ReadLine();
+                            return;
+                        }
                         if (CartContent.Count == 0)
                         {
                             CartContent.Add(new Product(items.ID, name, (items.Price) * qty, qty));
@@ -148,42 +158,57 @@ namespace Shopping
                         {
                             foreach (var content in CartContent)
                             {
-                                if (content.Name == name)
+                                var existingItem = CartContent.Find(x => x.Name == name);
+
+                                if (existingItem != null)
                                 {
-                                    content.Price += (items.Price) * qty;
-                                    content.Stock += qty;
-                                    items.Stock -= qty;
-                                    Overall += (items.Price) * qty;
-                                    ShowCart();
+                                    existingItem.Price += (items.Price) * qty;
+                                    existingItem.Stock += qty;
                                 }
                                 else
                                 {
                                     CartContent.Add(new Product(items.ID, name, (items.Price) * qty, qty));
-                                    items.Stock -= qty;
-                                    Overall += (items.Price) * qty;
-                                    ShowCart();
                                 }
+
+                                items.Stock -= qty;
+                                Overall += (items.Price) * qty;
+                                CartLimit += qty;
+
+                                ShowCart();
                             }
                         }
 
+                    }
+                    else
+                    {
+                        Console.WriteLine($"the item {items.Name}");
                     }
                 }
             }
         }
         private void Confirmation(int number)
         {
-            Console.WriteLine($"are you sure you wanna add {products[number].Name} to Cart? Y/N ");
-            string TempDescision = Console.ReadLine();
-            if (TempDescision.ToUpper() == "Y")
+            if (products[number].Stock != 0)
             {
-                Confirmation2(products[number].Name);
+                Console.WriteLine($"are you sure you wanna add {products[number].Name} to Cart? Y/N ");
+                string TempDescision = Console.ReadLine();
+                if (TempDescision.ToUpper() == "Y")
+                {
+
+                    Confirmation2(products[number].Name);
+                }
+                else
+                {
+                    Console.WriteLine("Cancelled!");
+                    Console.ReadLine();
+                    Cart();
+                }
             }
             else
             {
-                Console.WriteLine("Cancelled!");
-                Console.ReadLine();
-                Cart();
+                Console.WriteLine($"Cancelled, {products[number].Name}'s Stock is 0");
             }
+
 
         }
         private void Confirmation2(string name)

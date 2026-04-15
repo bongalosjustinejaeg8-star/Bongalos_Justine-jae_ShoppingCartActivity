@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SHOPPEE_TYPESHI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4a4f4af40237f688de385a636378d9d8530db113")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3610faef272f00317d5cc9dc951d1557aa256415")]
 [assembly: System.Reflection.AssemblyProductAttribute("SHOPPEE_TYPESHI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SHOPPEE_TYPESHI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
