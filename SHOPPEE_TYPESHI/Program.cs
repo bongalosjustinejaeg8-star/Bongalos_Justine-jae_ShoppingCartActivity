@@ -51,8 +51,9 @@ namespace Shopping
         public double Price { get; set; }
         public int Stock { get; set; }
 
-        public Product(int ID, string name, double price, int stock)
+        public Product(int id, string name, double price, int stock)
         {
+            ID = id;
             Name = name;
             Price = price;
             Stock = stock;
@@ -151,6 +152,7 @@ namespace Shopping
                             CartContent.Add(new Product(items.ID, name, (items.Price) * qty, qty));
                             items.Stock -= qty;
                             Overall += (items.Price) * qty;
+                            CartLimit += qty;
                             ShowCart();
                         }
 
