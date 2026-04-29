@@ -50,26 +50,28 @@ namespace Shopping
         public string Name { get; set; }
         public double Price { get; set; }
         public int Stock { get; set; }
+        public string Category { get; set; }
 
-        public Product(int id, string name, double price, int stock)
+        public Product(int id, string name, double price, int stock, string category)
         {
             ID = id;
             Name = name;
             Price = price;
             Stock = stock;
+            Category = category;
         }
     }
     public class Shop
     {
-        public List<Product> products = new List<Product>
+        public Product[] products = new Product[]
         {
-            new Product(001,"Laptop", 450, 10),
-            new Product(002,"Mechanical Keyboard", 349, 25),
-            new Product(003,"Wireless Mouse", 12.99, 40),
-            new Product(004,"27-inch Monitor", 89.00, 15),
-            new Product(005,"USB-C Hub", 79.75, 30)
+            new Product(001,"Laptop", 450, 10,"Gadget"),
+            new Product(002,"Mechanical Keyboard", 349, 25,"Keyboard"),
+            new Product(003,"Wireless Mouse", 12.99, 40,"Mouse"),
+            new Product(004,"27-inch Monitor", 89.00, 15,"Monitor"),
+            new Product(005,"USB-C Hub", 79.75, 30,"")
         };
-        public List<Product> CartContent = new List<Product>();
+        public Product[] CartContent = new Product[10];
         double Overall = 0;
         double Discount = 0;
         int CartLimit = 0;
