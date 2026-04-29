@@ -76,7 +76,7 @@ namespace Shopping
         double Discount = 0;
         int CartLimit = 0;
         int MaxCartLimit = 10;
-
+        private int cartItemCount = 0;
 
         //test3
 
@@ -101,7 +101,7 @@ namespace Shopping
                 Adding = Adding.ToUpper();
                 try
                 {
-                    if (products.Count >= int.Parse(Adding) - 1)
+                    if (products.Length >= int.Parse(Adding) - 1)
                     {
                         Confirmation(int.Parse(Adding) - 1);
                     }
@@ -138,56 +138,60 @@ namespace Shopping
         }
         private void AddToCart(string name, int qty)
         {
-            foreach (var items in products)
+            foreach (var product in products)
             {
-                if (items.Name == name)
+                if (product.Name == name)
                 {
-                    if ((items.Stock - qty) >= 0)
+                    if (product.Stock < qty)
                     {
-                        if (CartLimit + qty > MaxCartLimit)
+                        Console.WriteLine($"Insufficient stock for {product.Name}!");
+                        return;
+                    }
+
+                    if (CartLimit + qty > MaxCartLimit)
+                    {
+                        Console.WriteLine($"Cart limit reached! You can only add {MaxCartLimit - CartLimit} more.");
+                        Console.ReadLine();
+                        return;
+                    }
+
+                    
+                    Product existingItem = null;
+                    for (int i = 0; i < cartItemCount; i++)
+                    {
+                        if (CartContent[i].Name == name)
                         {
-                            Console.WriteLine($"Cart limit reached! You can only add {MaxCartLimit - CartLimit} more item(s).");
-                            Console.ReadLine();
-                            return;
+                            existingItem = CartContent[i];
+                            break;
                         }
-                        if (CartContent.Count == 0)
-                        {
-                            CartContent.Add(new Product(items.ID, name, (items.Price) * qty, qty));
-                            items.Stock -= qty;
-                            Overall += (items.Price) * qty;
-                            CartLimit += qty;
-                            ShowCart();
-                        }
+                    }
 
-                        else
-                        {
-                            foreach (var content in CartContent)
-                            {
-                                var existingItem = CartContent.Find(x => x.Name == name);
-
-                                if (existingItem != null)
-                                {
-                                    existingItem.Price += (items.Price) * qty;
-                                    existingItem.Stock += qty;
-                                }
-                                else
-                                {
-                                    CartContent.Add(new Product(items.ID, name, (items.Price) * qty, qty));
-                                }
-
-                                items.Stock -= qty;
-                                Overall += (items.Price) * qty;
-                                CartLimit += qty;
-
-                                ShowCart();
-                            }
-                        }
-
+                    if (existingItem != null)
+                    {
+                        existingItem.Price += product.Price * qty;
+                        existingItem.Stock += qty; 
                     }
                     else
                     {
-                        Console.WriteLine($"the item {items.Name}");
+                        if (cartItemCount < CartContent.Length)
+                        {
+                            CartContent[cartItemCount] = new Product(product.ID, name, product.Price * qty, qty,product.Category);
+                            cartItemCount++;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Cart array is full! Cannot add more unique items.");
+                            return;
+                        }
                     }
+
+  
+                    product.Stock -= qty;
+                    Overall += product.Price * qty;
+                    CartLimit += qty;
+
+                    ShowCart();
+                    return; 
                 }
             }
         }
@@ -361,7 +365,7 @@ namespace Shopping
                     Console.ReadLine();
                     Overall = 0;
                     Discount = 0;
-                    CartContent = new List<Product>();
+                    CartContent = new Product[10];
 
                 }
                 else
