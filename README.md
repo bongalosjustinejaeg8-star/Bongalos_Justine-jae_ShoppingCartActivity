@@ -1,168 +1,291 @@
+````md
 ## Console Shopping System
 
 ## Overview
 
-**Shoppee Typeshi** is a simple console-based shopping system built in C#. It allows users to browse products, add items to a cart, and complete a checkout process with optional discounts.
+**Shoppee Typeshi** is a console-based shopping system built in **C#** that simulates a basic e-commerce experience inside the terminal. Users can browse available products, search items, filter by category, manage a shopping cart, checkout purchases, and review previous transactions.
 
-This project demonstrates core programming concepts such as object-oriented programming (OOP), list manipulation, loops, and input validation.
+This project demonstrates important programming concepts such as **Object-Oriented Programming (OOP)**, arrays, collections, loops, conditionals, method organization, and input validation.
 
-
+---
 
 ## Features
 
-* View available products
+* View all available products
+* Search products by name
+* Filter products by category
 * Add items to cart with quantity selection
-* Real-time cart display with subtotal and total
+* Update cart quantity
+* Remove specific cart items
+* Clear entire cart
+* Real-time cart subtotal and total display
 * Stock validation (prevents over-purchasing)
+* Maximum cart quantity limit
 * Automatic total calculation
 * 10% discount for purchases ≥ 5000
 * Checkout system with payment and change calculation
+* Receipt generation
+* Low stock warning system
+* Order history tracking
 * Basic input validation
 
 ---
 
-##  Code Structure
+## Code Structure
 
-###  `Program` Class
+### `Program` Class
 
 * Entry point of the application
 * Displays the main menu:
 
   * Start Shopping
   * View Products
+  * Search Products
+  * Filter by Category
+  * View Order History
   * Exit
-* Handles user navigation using a loop and switch-case logic
+
+* Handles navigation using loop and switch-case logic
 
 ---
 
-###  `Product` Class
+### `Product` Class
 
-Represents a product in the system.
+Represents a product in the store.
 
 **Attributes:**
 
 * `ID` – Unique identifier
 * `Name` – Product name
-* `Price` – Price per item
+* `Price` – Product price
 * `Stock` – Available quantity
+* `Category` – Product classification
 
-👉 This class is used for both:
+Used for:
 
 * Store inventory
-* Cart items (with modified price & quantity)
+* Cart items
 
 ---
 
-### 🔹 `Shop` Class
+### `OrderRecord` Class
 
-Handles the main shopping logic and system behavior.
+Stores completed purchase information.
 
-#### 📦 Product List
+**Fields:**
 
-* Stored in `List<Product>`
-* Predefined (hardcoded) products for simplicity
+* `ReceiptNo`
+* `FinalTotal`
+* `DateTime`
 
-#### 🛒 Cart System
-
-* `CartContent` stores selected items
-* Tracks:
-
-  * Total cost (`Overall`)
-  * Discounted total (`Discount`)
-  * Cart item count (`CartLimit`)
-  * Maximum allowed items (`MaxCartLimit`)
+Used for viewing transaction history.
 
 ---
 
-## 🔄 Core Functionalities
+### `Shop` Class
 
-### 🛍️ Shopping Flow (`Cart`)
+Handles the main shopping system logic.
 
-* Displays products
-* Accepts user input:
+Includes:
 
-  * Product number → proceed to confirmation
-  * `X` → exit shopping
-  * `C` → checkout
-* Uses exception handling to manage invalid inputs
-
----
-
-### ✅ Confirmation System
-
-* `Confirmation()` → asks user to confirm item selection
-* `Confirmation2()` → asks for quantity
-
-  * Defaults to **1** if input is empty
-  * Validates stock before adding
+* Product inventory
+* Cart management
+* Checkout system
+* Search/filter functions
+* Order history system
 
 ---
 
-### ➕ Add to Cart (`AddToCart`)
+## Core Functionalities
 
-* Checks:
+### Product Viewing (`DisplayProducts`)
 
-  * Stock availability
-  * Cart limit
-* Updates:
+Displays all available products with:
 
-  * Cart content
-  * Product stock
-  * Total cost
-* Merges duplicate items in cart
+* Name
+* Price
+* Stock
+* Category
 
 ---
 
-### 🧾 Cart Display (`ShowCart`)
+### Search Products (`SearchProduct`)
 
-* Shows:
+Allows users to search products by keyword.
 
-  * Item name
-  * Quantity
-  * Subtotal
-  * Overall total
-* Automatically returns user to shopping loop
+Example:
+
+```text
+mouse
+````
+
+Returns matching products such as:
+
+```text
+Wireless Mouse
+```
 
 ---
 
-### 💳 Checkout System
+### Filter by Category (`FilterByCategory`)
 
-Triggered when user enters `C`
+Displays products under selected categories such as:
 
-#### 💸 Discounted Checkout (`Discounted`)
+* Gadget
+* Keyboard
+* Mouse
+* Monitor
+* Accessories
 
-* Applied when total ≥ 5000
+---
+
+### Shopping Flow (`Cart`)
+
+Users may enter:
+
+* Product number → Add item
+* `V` → View Cart
+* `X` → Exit Shopping
+
+Uses validation and exception handling for invalid input.
+
+---
+
+### Confirmation System
+
+#### `Confirmation()`
+
+Asks user to confirm selected product.
+
+#### `Confirmation2()`
+
+Requests quantity.
+
+* Defaults to **1** if left blank
+* Validates stock before adding
+
+---
+
+### Add to Cart (`AddToCart`)
+
+Checks:
+
+* Available stock
+* Cart quantity limit
+* Existing duplicate items
+
+Updates:
+
+* Cart contents
+* Product stock
+* Total cost
+
+---
+
+### Cart Management Menu
+
+Inside cart, users can:
+
+1. Remove an item
+2. Update quantity
+3. Clear cart
+4. Checkout
+5. Continue Shopping
+
+---
+
+### Cart Display (`ShowCartDisplay`)
+
+Shows:
+
+* Product name
+* Quantity
+* Item subtotal
+* Overall total
+
+---
+
+### Checkout System
+
+Triggered through cart menu.
+
+---
+
+#### Discounted Checkout (`Discounted`)
+
+Applied when total purchase is **5000 or higher**
+
 * 10% discount
-* Validates payment before completing purchase
+* Payment validation
+* Receipt generation
+* Order history save
 
-#### 💵 Normal Checkout (`NormalCheckout`)
+---
+
+#### Normal Checkout (`NormalCheckout`)
+
+Used when total is below **5000**
 
 * Standard payment process
 * Calculates change
-* Resets cart after successful transaction
+* Saves order history
 
 ---
 
-## 🔄 Program Flow
+### Receipt System (`PrintReceipt`)
+
+Displays:
+
+* Receipt Number
+* Purchase Date & Time
+* Purchased Items
+* Grand Total
+* Discount (if applied)
+* Final Total
+* Payment
+* Change
+
+---
+
+### Low Stock Alert (`LowStockAlert`)
+
+After checkout, warns when remaining stock is **5 or below**.
+
+Example:
+
+```text
+Laptop has only 3 stock(s) left.
+```
+
+---
+
+### Order History (`ViewOrderHistory`)
+
+Displays all successful transactions:
+
+* Receipt Number
+* Final Total
+* Date & Time
+
+---
+
+## Program Flow
 
 1. Program starts
-2. Menu is displayed
-3. User selects an option:
-
-   * Start Shopping → enters cart system
-   * View Products → displays inventory
-   * Exit → ends program
-4. User adds items to cart
-5. User proceeds to checkout
-6. Payment is processed
-7. System resets for next transaction
+2. Main menu is displayed
+3. User selects an option
+4. Shopping/cart operations occur
+5. Checkout processes payment
+6. Receipt is shown
+7. Order saved to history
+8. Cart resets for next transaction
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
-1. Open terminal in project folder
-2. Run the program:
+1. Open terminal inside project folder
+2. Run:
 
 ```bash
 dotnet run
@@ -170,22 +293,45 @@ dotnet run
 
 ---
 
-## 📚 Concepts Used
+## Concepts Used
 
 * Object-Oriented Programming (OOP)
+* Arrays
 * Lists (`List<T>`)
-* Loops (`while`)
+* HashSet
+* Loops (`while`, `foreach`)
 * Conditional Statements (`if`, `switch`)
 * Exception Handling (`try-catch`)
-* Basic Input Validation
+* Input Validation
+* Method Decomposition
 
 ---
 
-## ⚠️ Notes / Limitations
+## Notes / Limitations
 
-* Products are hardcoded (no database)
-* Input handling is basic (can be improved)
-* Cart logic may duplicate loops (optimization possible)
-* UI is console-based only
+* Products are hardcoded
+* Data resets when program closes
+* No database integration
+* Console UI only
+* Cart uses fixed-size array
+* Could be improved using `List<Product>`
 
+---
 
+## AI Usage Declaration
+
+This project was developed with assistance from **OpenAI ChatGPT**.
+
+AI was used for:
+
+* Improving structure and readability
+* Generating project documentation (README)
+
+All final decisions, edits, testing, and implementation were done by the developer.
+
+**AI Tool Used:** ChatGPT
+**Conversation Used:** This conversation session
+**Link:** https://chatgpt.com/share/69f363cb-b770-8323-83c8-dc836f505f80
+
+```
+```
