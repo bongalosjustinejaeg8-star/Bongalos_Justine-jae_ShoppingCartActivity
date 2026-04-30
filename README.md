@@ -1,4 +1,3 @@
-````md
 ## Console Shopping System
 
 ## Overview
@@ -117,15 +116,6 @@ Example:
 
 ```text
 mouse
-````
-
-Returns matching products such as:
-
-```text
-Wireless Mouse
-```
-
----
 
 ### Filter by Category (`FilterByCategory`)
 
