@@ -106,10 +106,6 @@ namespace Shopping
         private OrderRecord[] orderHistory = new OrderRecord[100];
         private int orderCount = 0;
 
-        // ─────────────────────────────────────────────
-        //  DISPLAY & SEARCH
-        // ─────────────────────────────────────────────
-
         public void DisplayProducts()
         {
             int TempNum = 1;
@@ -122,59 +118,7 @@ namespace Shopping
             Console.WriteLine("");
         }
 
-        public void SearchProduct()
-        {
-            Console.Clear();
-            Console.Write("Enter product name to search: ");
-            string keyword = Console.ReadLine()?.ToLower();
-            bool found = false;
-            int num = 1;
-            foreach (var p in products)
-            {
-                if (p.Name.ToLower().Contains(keyword))
-                {
-                    Console.WriteLine($"{num}. {p.Name} - {p.Price:F2} - Stock: {p.Stock} - Category: {p.Category}");
-                    found = true;
-                }
-                num++;
-            }
-            if (!found) Console.WriteLine("No products found.");
-            Console.WriteLine("\nPress Enter to continue.");
-            Console.ReadLine();
-        }
-
-        public void FilterByCategory()
-        {
-            Console.Clear();
-            var categories = new HashSet<string>();
-            foreach (var p in products)
-                if (!string.IsNullOrEmpty(p.Category)) categories.Add(p.Category);
-
-            Console.WriteLine("Available Categories:");
-            int i = 1;
-            var catList = new List<string>(categories);
-            foreach (var c in catList) Console.WriteLine($"{i++}. {c}");
-
-            Console.Write("\nEnter category name: ");
-            string input = Console.ReadLine()?.ToLower();
-
-            bool found = false;
-            foreach (var p in products)
-            {
-                if (p.Category.ToLower() == input)
-                {
-                    Console.WriteLine($"{p.ID}. {p.Name} - {p.Price:F2} - Stock: {p.Stock}");
-                    found = true;
-                }
-            }
-            if (!found) Console.WriteLine("No products found in that category.");
-            Console.WriteLine("\nPress Enter to continue.");
-            Console.ReadLine();
-        }
-
-        // ─────────────────────────────────────────────
-        //  CART FLOW
-        // ─────────────────────────────────────────────
+        
 
         public void Cart()
         {
@@ -215,11 +159,6 @@ namespace Shopping
                 }
             }
         }
-
-        // ─────────────────────────────────────────────
-        //  CART MANAGEMENT MENU
-        // ─────────────────────────────────────────────
-
         private void CartManagementMenu()
         {
             while (true)
@@ -377,10 +316,6 @@ namespace Shopping
             }
         }
 
-        // ─────────────────────────────────────────────
-        //  ADD TO CART
-        // ─────────────────────────────────────────────
-
         private void AddToCart(string name, int qty)
         {
             foreach (var product in products)
@@ -442,10 +377,6 @@ namespace Shopping
             }
         }
 
-        // ─────────────────────────────────────────────
-        //  CONFIRMATION
-        // ─────────────────────────────────────────────
-
         private void Confirmation(int number)
         {
             if (products[number].Stock != 0)
@@ -502,10 +433,6 @@ namespace Shopping
                 }
             }
         }
-
-        // ─────────────────────────────────────────────
-        //  CHECKOUT
-        // ─────────────────────────────────────────────
 
         private void Checkout()
         {
@@ -599,10 +526,6 @@ namespace Shopping
             Console.WriteLine("==============================================================");
         }
 
-        // ─────────────────────────────────────────────
-        //  LOW STOCK ALERT
-        // ─────────────────────────────────────────────
-
         private void LowStockAlert()
         {
             bool hasLow = false;
@@ -617,11 +540,6 @@ namespace Shopping
             }
             if (!hasLow) Console.WriteLine("  All products are sufficiently stocked.");
         }
-
-        // ─────────────────────────────────────────────
-        //  ORDER HISTORY
-        // ─────────────────────────────────────────────
-
         private void SaveOrderHistory(double finalTotal)
         {
             if (orderCount < orderHistory.Length)
@@ -634,7 +552,6 @@ namespace Shopping
                 };
             }
         }
-
         public void ViewOrderHistory()
         {
             Console.Clear();
@@ -648,9 +565,6 @@ namespace Shopping
             Console.ReadLine();
         }
 
-        // ─────────────────────────────────────────────
-        //  HELPERS
-        // ─────────────────────────────────────────────
 
         private void ResetCart()
         {
