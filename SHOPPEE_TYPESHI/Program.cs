@@ -118,61 +118,6 @@ namespace Shopping
             Console.WriteLine("");
         }
 
-        public void SearchProduct()
-        {
-            Console.Clear();
-            Console.Write("Enter product name to search: ");
-            string keyword = Console.ReadLine()?.ToLower();
-            bool found = false;
-            int num = 1;
-            foreach (var p in products)
-            {
-                if (p.Name.ToLower().Contains(keyword))
-                {
-                    Console.WriteLine($"{num}. {p.Name} - {p.Price:F2} - Stock: {p.Stock} - Category: {p.Category}");
-                    found = true;
-                }
-                num++;
-            }
-            if (!found) Console.WriteLine("No products found.");
-            Console.WriteLine("\nPress Enter to continue.");
-            Console.ReadLine();
-        }
-
-
-        public void FilterByCategory()
-        {
-            Console.Clear();
-            var categories = new HashSet<string>();
-            foreach (var p in products)
-                if (!string.IsNullOrEmpty(p.Category)) categories.Add(p.Category);
-
-
-            Console.WriteLine("Available Categories:");
-            int i = 1;
-            var catList = new List<string>(categories);
-            foreach (var c in catList) Console.WriteLine($"{i++}. {c}");
-
-
-            Console.Write("\nEnter category name: ");
-            string input = Console.ReadLine()?.ToLower();
-
-
-            bool found = false;
-            foreach (var p in products)
-            {
-                if (p.Category.ToLower() == input)
-                {
-                    Console.WriteLine($"{p.ID}. {p.Name} - {p.Price:F2} - Stock: {p.Stock}");
-                    found = true;
-                }
-            }
-            if (!found) Console.WriteLine("No products found in that category.");
-            Console.WriteLine("\nPress Enter to continue.");
-            Console.ReadLine();
-        }
-
-
         public void Cart()
         {
             while (true)
